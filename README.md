@@ -1,16 +1,18 @@
-# React + Vite
+# daily_recipe
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vite + React + Tailwind によるミニアプリ（レシピの追加・削除・一覧）。
 
-Currently, two official plugins are available:
+## ハンズオンガイド
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+AI に質問しながら、手を動かして理解を深めるための実践ドキュメント：
 
-## React Compiler
+- `docs/ai-hands-on.md`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+UI の挙動を目で追い、意図的にコードを崩して戻す練習で、状態更新・レンダー・key の扱いを体感できます。
 
-## Expanding the ESLint configuration
+## セットアップ
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```zsh
+npm install
+npm run dev
+```
