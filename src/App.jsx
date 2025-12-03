@@ -1,13 +1,20 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RecipeForm } from "./components/RecipeForm";
 import { RecipeList } from "./components/RecipeList";
 import { filterRecipes, sortRecipes } from "./features/recipes/logic";
 import { useDebouncedValue } from "./features/recipes/hook";
 import { SearchFilters } from "./components/SearchFilters";
+import { localRecipes, saveRecipes } from "./features/recipes/storage";
 import "./App.css";
 
 function App() {
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState(() => localRecipes());
+
+  //保存トリガー
+  useEffect(() => {
+    saveRecipes(recipes);
+  }, [recipes]);
+
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(); //undefinedならフィルタなし
   const [status, setStatus] = useState();
