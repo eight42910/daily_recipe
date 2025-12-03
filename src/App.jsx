@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RecipeForm } from "./components/RecipeForm";
 import { RecipeList } from "./components/RecipeList";
+import { filterRecipes, sortRecipes } from "./features/recipes/logic";
+import { useDebouncedValue } from "./features/recipes/hook";
+import { SearchFilters } from "./components/SearchFilters";
 import "./App.css";
 
 function App() {
   const [recipes, setRecipes] = useState([]);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState(); //undefinedならフィルタなし
+  const [status, setStatus] = useState();
+  const [sort, setSort] = useState("created-desc");
+
+  const q = useDebouncedValue(query, 300);
 
   const handleAdd = (input) => {
     const newRecipe = {
@@ -12,7 +21,6 @@ function App() {
       id: crypto.randomUUID(),
       createdAt: Date.now(),
     };
-
     setRecipes((prev) => [newRecipe, ...prev]);
   };
 
@@ -21,12 +29,34 @@ function App() {
       setRecipes((prev) => prev.filter((recipe) => recipe.id !== id));
     }
   };
+
+  const filtered = useMemo(
+    () => filterRecipes(recipes, q, category, status),
+    [recipes, q, category, status]
+  );
+  const visible = useMemo(() => sortRecipes(filtered, sort), [filtered, sort]);
   return (
     <div>
       <div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">レシピノート</h1>
-        <RecipeForm onAdd={handleAdd} />
-        <RecipeList recipes={recipes} onDelete={handleDelete} />
+        <header>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+            レシピノート
+          </h1>
+        </header>
+        <section>
+          <SearchFilters
+            query={query}
+            category={category}
+            status={status}
+            sort={sort}
+            onQueryChange={setQuery}
+            onCategoryChange={setCategory}
+            onStatusChange={setStatus}
+            onSortChange={setSort}
+          />
+          <RecipeForm onAdd={handleAdd} />
+          <RecipeList recipes={visible} onDelete={handleDelete} />
+        </section>
       </div>
     </div>
   );
