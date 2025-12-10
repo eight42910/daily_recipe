@@ -7,11 +7,9 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SearchFilters } from "../components/SearchFilters";
-import { RecipeForm } from "../components/RecipeForm";
 import { RecipeList } from "../components/RecipeList";
 import { filterRecipes, sortRecipes } from "../features/recipes/logic";
 import { useDebouncedValue } from "../features/recipes/hook";
-import { localRecipes, saveRecipes } from "../features/recipes/storage";
 
 function paramsToState(p) {
   return {
@@ -31,31 +29,23 @@ function stateToParams(s) {
   return p;
 }
 
-export function HomePage() {
-  //初回だけ実行
-  const [recipes, setRecipes] = useState(() => localRecipes());
-  useEffect(() => saveRecipes(recipes), [recipes]); //recipesが変わるたびに、localStorageに保存
+export function HomePage({ recipes, onDelete }) {
   //URLクエリと状態をあわせて、検索条件付きのURL共有、リロード復元を可能にする
   const [params, setParams] = useSearchParams();
   const [filters, setFilters] = useState(() => paramsToState(params)); //URLクエリが変わるたびに、filtersをURLに合わせる
-  useEffect(() => setFilters(paramsToState(params)), [params]);
 
+  useEffect(() => setFilters(paramsToState(params)), [params]);
   const q = useDebouncedValue(filters.q, 300); //q入力が変わるたびに、300ms後に確定値を更新
 
   //イベントハンドラ
-  const handleAdd = (input) => {
-    const newRecipe = {
-      ...input,
-      id: crypto.randomUUID(),
-      createdAt: Date.now(),
-    };
-    setRecipes((prev) => [newRecipe, ...prev]); //prevの先頭に親要素を挿入（新しい配列を返す）
-  };
-  const handleDelete = (id) => {
-    if (window.confirm("このレシピを削除しますか？")) {
-      setRecipes((prev) => prev.filter((r) => r.id !== id));
-    }
-  };
+  //   const handleAdd = (input) => {
+  //     const newRecipe = {
+  //       ...input,
+  //       id: crypto.randomUUID(),
+  //       createdAt: Date.now(),
+  //     };
+  //     setRecipes((prev) => [newRecipe, ...prev]); //prevの先頭に親要素を挿入（新しい配列を返す）
+  //   };
 
   const handleFilterChange = (next) => {
     setFilters(next);
@@ -85,8 +75,8 @@ export function HomePage() {
         onStatusChange={(status) => handleFilterChange({ ...filters, status })}
         onSortChange={(sort) => handleFilterChange({ ...filters, sort })}
       />
-      <RecipeForm onAdd={handleAdd} />
-      <RecipeList recipes={visible} onDelete={handleDelete} />
+
+      <RecipeList recipes={visible} onDelete={onDelete} />
     </div>
   );
 }

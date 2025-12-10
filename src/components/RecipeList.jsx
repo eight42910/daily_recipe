@@ -13,7 +13,7 @@ export function RecipeList({ recipes, onDelete }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 py-6">
       <h2 className="text-xl font-semibold mb-4">
         レシピ一覧 ({recipes.length}件)
       </h2>
